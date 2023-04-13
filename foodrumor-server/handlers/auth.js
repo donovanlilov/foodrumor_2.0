@@ -9,8 +9,10 @@ try{
  let { id, username, profileImageUrl } = user
  let isMatch = await user.comparePassword(req.body.password)
  if(isMatch){
+    // commented
     let token = jwt.sign({
-        id: id,
+        //id:
+         id,
         username,
         profileImageUrl
     },
@@ -19,29 +21,31 @@ try{
     return res.status(200).json({
         id,
         username,
-        profileImageURL,
-        token
+        profileImageUrl,
+    token
     });
  } else {
    return next({
     status: 400,
     message: "Invalid Email/Password"
-   });
+   }); 
+
  }
 } catch (e) {
     return next({ status: 400, message: "Invalid Email/Password"});
 }
  };
 
- exports.signup = async function( req, res, next) {
+ exports.signup = function( req, res, next) {
     try {
-        let user = await db.User.create(req.body);
+        console.log("in backend and reached sign in end point")
+        let user = db.User.create(req.body);
         let {id, username, profileImageUrl }  = user
-        let token =- jwt.sign(
+        let token = jwt.sign(
             {
             id,
             username,
-            profileIamgeUrl
+            profileImageUrl
         }, 
         process.env.SECRET_KEY
         );

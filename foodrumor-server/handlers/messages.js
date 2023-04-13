@@ -6,7 +6,7 @@ exports.createMessage = async function(req, res, next) {
             text: req.body.text,
             user: req.params.id
         });
-        let foundUser = await db.User.findById(req.params.id);
+        let foundUser = await db.User.findById(req.params.id); //maybe get rid of semicolon
         foundUser.messages.push(message.id);
         await foundUser.save();
         let foundMessage = db.Message.findById(message._id).populate("user", {

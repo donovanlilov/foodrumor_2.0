@@ -13,6 +13,10 @@ const userSchema = new mongoose.Schema({
         required: true,
         unique: true
     },
+    password: {
+        type: String,
+        required: true,
+    },
     profileImageUrl: {
         type: String
     },
@@ -21,13 +25,14 @@ const userSchema = new mongoose.Schema({
         ref: "Message"
     }]
 });
-
-userSchema.pre("save", async function(){
+//added next
+userSchema.pre("save", async function(next){
     try{
         if(!this.isModified("password")){
             return next();
         }
-        let hashedPassword = bcrypt.hash(this.password, 10);
+        //added
+        let hashedPassword = await bcrypt.hash(this.password, 10);
         this.password = hashedPassword;
         return next();
     } catch(err){
@@ -38,11 +43,11 @@ userSchema.pre("save", async function(){
 
 userSchema.methods.comparePassword = async function(candidatePassword, next){
     try {
-        let isMatch = await bcrypt.compare(candidatePasssword, this.password);
+        let isMatch = await bcrypt.compare(candidatePassword, this.password);
         return isMatch;
     } catch (err) {
         return next(err);
     }
-};
+}; //might need to get rid of semi colon
 const User = mongoose.model("User", userSchema);
 module.exports = User;
